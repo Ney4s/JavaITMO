@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: autosalon
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/autosalon}
+    username: ${DB_USERNAME:autosalon}
+    password: ${DB_PASSWORD:autosalon}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8081/realms/autosalon}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8081/realms/autosalon/protocol/openid-connect/certs}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+server:
+  port: ${SERVER_PORT:8080}

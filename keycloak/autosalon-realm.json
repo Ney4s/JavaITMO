@@ -1,0 +1,142 @@
+{
+  "realm": "autosalon",
+  "enabled": true,
+  "loginWithEmailAllowed": true,
+  "registrationAllowed": false,
+  "accessTokenLifespan": 1800,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "USER",
+        "description": "Клиент автосалона"
+      },
+      {
+        "name": "MANAGER",
+        "description": "Менеджер автосалона"
+      },
+      {
+        "name": "WAREHOUSE_ADMIN",
+        "description": "Администратор склада"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Администратор системы"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "autosalon-api",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "*"
+      ],
+      "webOrigins": [
+        "*"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "client",
+      "email": "client@autosalon.ru",
+      "firstName": "Алексей",
+      "lastName": "Клиентов",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "client",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "client2",
+      "email": "client2@autosalon.ru",
+      "firstName": "Мария",
+      "lastName": "Вторая",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "client2",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "USER"
+      ]
+    },
+    {
+      "username": "manager",
+      "email": "manager@autosalon.ru",
+      "firstName": "Иван",
+      "lastName": "Менеджер",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "manager",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "MANAGER"
+      ]
+    },
+    {
+      "username": "warehouse",
+      "email": "warehouse@autosalon.ru",
+      "firstName": "Петр",
+      "lastName": "Складов",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "warehouse",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "WAREHOUSE_ADMIN"
+      ]
+    },
+    {
+      "username": "admin",
+      "email": "admin@autosalon.ru",
+      "firstName": "Системный",
+      "lastName": "Админ",
+      "enabled": true,
+      "emailVerified": true,
+      "requiredActions": [],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    }
+  ]
+}

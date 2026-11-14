@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020-users-keycloak-id
+      author: neyas
+      changes:
+        - sql:
+            sql: alter table users add column keycloak_id varchar(64)
+        - sql:
+            sql: alter table users add constraint uq_users_keycloak_id unique (keycloak_id)
+      rollback:
+        - sql:
+            sql: alter table users drop column keycloak_id

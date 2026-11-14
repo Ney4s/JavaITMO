@@ -1,0 +1,196 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-users
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table users (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  role varchar(32) not null,
+                  username varchar(255) not null,
+                  number varchar(32) not null unique,
+                  email varchar(255) not null unique
+              )
+      rollback:
+        - sql:
+            sql: drop table users
+
+  - changeSet:
+      id: 002-models
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table models (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  code varchar(64) not null unique,
+                  manufacturer varchar(255) not null,
+                  name varchar(255) not null
+              )
+      rollback:
+        - sql:
+            sql: drop table models
+
+  - changeSet:
+      id: 003-component-options
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table component_options (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  component_type varchar(32) not null,
+                  code varchar(64) not null unique,
+                  name varchar(255) not null,
+                  price bigint not null,
+                  fuel_type varchar(32),
+                  hp_power bigint,
+                  displacement double precision,
+                  transmission_type varchar(32),
+                  body_type varchar(32),
+                  drive_type varchar(32)
+              )
+      rollback:
+        - sql:
+            sql: drop table component_options
+
+  - changeSet:
+      id: 004-model-configuration
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table model_base_configuration (
+                  model_id uuid not null references models (id),
+                  component_option_id uuid not null references component_options (id),
+                  component_type varchar(32) not null,
+                  primary key (model_id, component_type)
+              )
+        - sql:
+            sql: >
+              create table model_available_options (
+                  model_id uuid not null references models (id),
+                  component_option_id uuid not null references component_options (id),
+                  primary key (model_id, component_option_id)
+              )
+      rollback:
+        - sql:
+            sql: drop table model_available_options
+        - sql:
+            sql: drop table model_base_configuration
+
+  - changeSet:
+      id: 005-cars
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table cars (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  model_id uuid not null references models (id),
+                  vin varchar(17) unique,
+                  color varchar(32) not null,
+                  car_status varchar(32) not null
+              )
+        - sql:
+            sql: >
+              create table car_components (
+                  car_id uuid not null references cars (id),
+                  component_option_id uuid not null references component_options (id),
+                  component_type varchar(32) not null,
+                  primary key (car_id, component_type)
+              )
+      rollback:
+        - sql:
+            sql: drop table car_components
+        - sql:
+            sql: drop table cars
+
+  - changeSet:
+      id: 006-spare-parts
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table spare_parts (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  code varchar(64) not null unique,
+                  name varchar(255) not null,
+                  price bigint not null,
+                  quantity_in_stock integer not null
+              )
+        - sql:
+            sql: >
+              create table spare_part_models (
+                  spare_part_id uuid not null references spare_parts (id),
+                  model_id uuid not null references models (id),
+                  primary key (spare_part_id, model_id)
+              )
+      rollback:
+        - sql:
+            sql: drop table spare_part_models
+        - sql:
+            sql: drop table spare_parts
+
+  - changeSet:
+      id: 007-orders
+      author: neyas
+      changes:
+        - sql:
+            sql: >
+              create table orders (
+                  id uuid primary key,
+                  created_at timestamp with time zone not null,
+                  updated_at timestamp with time zone not null,
+                  removed boolean not null default false,
+                  order_type varchar(32) not null,
+                  status varchar(32) not null,
+                  client_id uuid references users (id),
+                  manager_id uuid references users (id),
+                  car_id uuid references cars (id),
+                  spare_part_id uuid references spare_parts (id),
+                  price bigint,
+                  quantity integer,
+                  starts_at timestamp without time zone
+              )
+      rollback:
+        - sql:
+            sql: drop table orders
+
+  - changeSet:
+      id: 008-indexes
+      author: neyas
+      changes:
+        - sql:
+            sql: create index idx_cars_status on cars (car_status)
+        - sql:
+            sql: create index idx_cars_model on cars (model_id)
+        - sql:
+            sql: create index idx_orders_client on orders (client_id)
+        - sql:
+            sql: create index idx_orders_type on orders (order_type)
+      rollback:
+        - sql:
+            sql: drop index idx_orders_type
+        - sql:
+            sql: drop index idx_orders_client
+        - sql:
+            sql: drop index idx_cars_model
+        - sql:
+            sql: drop index idx_cars_status
